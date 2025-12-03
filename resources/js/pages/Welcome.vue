@@ -63,31 +63,31 @@ defineProps<{
 
         <!-- Shop By Type -->
         <div class="w-full bg-white py-20 mb-16">
-             <div class="w-full text-center">
+             <div class="w-full text-center px-8 md:px-0">
                 <h3 class="text-4xl font-serif mb-16 text-[#7A2021] uppercase tracking-widest">Shop By Type</h3>
 
-                <div class="flex justify-center gap-12 flex-wrap px-4">
+                <div class="flex justify-center gap-12 flex-wrap px-8">
                     <!-- Mock Categories -->
                     <div class="flex flex-col items-center gap-6">
-                        <div class="w-[400px] h-[400px] rounded-full bg-gray-200 overflow-hidden relative group cursor-pointer">
+                        <div class="w-[300px] h-[300px] rounded-full bg-gray-200 overflow-hidden relative group cursor-pointer">
                              <img src="https://placehold.co/400" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
                         </div>
                         <span class="text-xl uppercase tracking-widest text-[#7A2021] font-bold">Earrings</span>
                     </div>
                     <div class="flex flex-col items-center gap-6">
-                        <div class="w-[400px] h-[400px] rounded-full bg-gray-200 overflow-hidden relative group cursor-pointer">
+                        <div class="w-[300px] h-[300px] rounded-full bg-gray-200 overflow-hidden relative group cursor-pointer">
                              <img src="https://placehold.co/400" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
                         </div>
                         <span class="text-xl uppercase tracking-widest text-[#7A2021] font-bold">Necklaces</span>
                     </div>
                     <div class="flex flex-col items-center gap-6">
-                        <div class="w-[400px] h-[400px] rounded-full bg-gray-200 overflow-hidden relative group cursor-pointer">
+                        <div class="w-[300px] h-[300px] rounded-full bg-gray-200 overflow-hidden relative group cursor-pointer">
                              <img src="https://placehold.co/400" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
                         </div>
                         <span class="text-xl uppercase tracking-widest text-[#7A2021] font-bold">Bracelets</span>
                     </div>
                      <div class="flex flex-col items-center gap-6">
-                        <div class="w-[400px] h-[400px] rounded-full bg-gray-200 overflow-hidden relative group cursor-pointer">
+                        <div class="w-[300px] h-[300px] rounded-full bg-gray-200 overflow-hidden relative group cursor-pointer">
                              <img src="https://placehold.co/400" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
                         </div>
                         <span class="text-xl uppercase tracking-widest text-[#7A2021] font-bold">Rings</span>
@@ -100,10 +100,11 @@ defineProps<{
         <div class="max-w-[1600px] mx-auto px-6 mb-24">
             <h3 class="text-4xl font-serif mb-12 text-center text-[#7A2021] uppercase tracking-widest">Our Best Seller</h3>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-                <Link v-for="(product, index) in products.slice(0, 4)" :key="product.id" :href="route('shop.show', product.slug)" class="group relative block">
+            <div class="flex overflow-x-auto snap-x snap-mandatory gap-6 pb-8 no-scrollbar">
+                <!-- Products (Limit to 5) -->
+                <Link v-for="(product, index) in products.slice(0, 5)" :key="product.id" :href="route('shop.show', product.slug)" class="group relative block min-w-[300px] w-[300px] snap-center flex-shrink-0">
                     <!-- Image Container -->
-                    <div class="aspect-[3/4] bg-gray-100 relative overflow-hidden">
+                    <div class="aspect-square bg-gray-100 relative overflow-hidden">
                         <img v-if="product.image_path" :src="'/storage/' + product.image_path" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
                         <div v-else class="w-full h-full flex items-center justify-center text-gray-400">No Image</div>
 
@@ -127,6 +128,14 @@ defineProps<{
 
                         <!-- Gradient Overlay for text readability -->
                         <div class="absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-black/50 to-transparent pointer-events-none"></div>
+                    </div>
+                </Link>
+
+                <!-- 6th Item: View More -->
+                <Link :href="route('shop.index')" class="group relative block min-w-[300px] w-[300px] snap-center flex-shrink-0">
+                    <div class="aspect-square bg-[#7A2021] flex flex-col items-center justify-center text-white hover:bg-opacity-90 transition">
+                        <span class="text-2xl font-bold uppercase tracking-widest mb-4">View More</span>
+                        <ArrowRight class="w-12 h-12" />
                     </div>
                 </Link>
             </div>
