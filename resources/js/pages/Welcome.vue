@@ -24,7 +24,7 @@ defineProps<{
 
     <div class="min-h-screen bg-[#F9F5F1] text-[#4A2C2A] font-sans overflow-x-hidden">
         <!-- Header -->
-        <header class="flex justify-between items-center px-10 py-8 bg-[#F9F5F1]">
+        <header class="flex justify-between items-center px-20 py-12 bg-[#F9F5F1]">
             <!-- Logo -->
             <div class="text-2xl font-bold tracking-widest text-[#7A2021] origin-left scale-[1.15]">
                 CLAY 27
@@ -63,8 +63,8 @@ defineProps<{
 
         <!-- Shop By Type -->
         <div class="w-full bg-white py-20 mb-16">
-             <div class="w-full text-center px-8 md:px-0">
-                <h3 class="text-4xl font-serif mb-16 text-[#7A2021] uppercase tracking-widest">Shop By Type</h3>
+             <div class="w-full text-center px-8 md:px-0 pb-12">
+                <h3 class="text-4xl font-serif mb-24 text-[#7A2021] uppercase tracking-widest">Shop By Type</h3>
 
                 <div class="flex justify-center gap-12 flex-wrap px-8">
                     <!-- Mock Categories -->
@@ -97,12 +97,12 @@ defineProps<{
         </div>
 
         <!-- Best Sellers -->
-        <div class="max-w-[1600px] mx-auto px-6 mb-24">
+        <div class="max-w-[1600px] mx-auto px-6 mb-24 mt-24">
             <h3 class="text-4xl font-serif mb-12 text-center text-[#7A2021] uppercase tracking-widest">Our Best Seller</h3>
 
             <div class="flex overflow-x-auto snap-x snap-mandatory gap-6 pb-8 no-scrollbar">
-                <!-- Products (Limit to 5) -->
-                <Link v-for="(product, index) in products.slice(0, 5)" :key="product.id" :href="route('shop.show', product.slug)" class="group relative block min-w-[300px] w-[300px] snap-center flex-shrink-0">
+                <!-- Products (Limit to 6) -->
+                <Link v-for="(product, index) in products.slice(0, 6)" :key="product.id" :href="route('shop.show', product.slug)" class="group relative block min-w-[300px] w-[300px] md:min-w-[calc(25%-1.125rem)] md:w-[calc(25%-1.125rem)] snap-center flex-shrink-0">
                     <!-- Image Container -->
                     <div class="aspect-square bg-gray-100 relative overflow-hidden">
                         <img v-if="product.image_path" :src="'/storage/' + product.image_path" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
@@ -131,11 +131,11 @@ defineProps<{
                     </div>
                 </Link>
 
-                <!-- 6th Item: View More -->
-                <Link :href="route('shop.index')" class="group relative block min-w-[300px] w-[300px] snap-center flex-shrink-0">
-                    <div class="aspect-square bg-[#7A2021] flex flex-col items-center justify-center text-white hover:bg-opacity-90 transition">
-                        <span class="text-2xl font-bold uppercase tracking-widest mb-4">View More</span>
-                        <ArrowRight class="w-12 h-12" />
+                <!-- 7th Item: View More -->
+                <Link :href="route('shop.index')" class="group relative block min-w-[300px] w-[300px] md:min-w-[calc(25%-1.125rem)] md:w-[calc(25%-1.125rem)] snap-center flex-shrink-0">
+                    <div class="aspect-square bg-transparent border border-[#7A2021] flex flex-col items-center justify-center text-[#7A2021] transition">
+                        <span class="text-lg font-bold uppercase tracking-widest mb-4 group-hover:text-gray-500 transition-colors duration-300">View More</span>
+                        <ArrowRight class="w-10 h-10 group-hover:scale-125 group-hover:text-gray-500 transition-all duration-300" />
                     </div>
                 </Link>
             </div>
