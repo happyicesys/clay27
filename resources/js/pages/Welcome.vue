@@ -101,8 +101,8 @@ defineProps<{
             <h3 class="text-4xl font-serif mb-12 text-center text-[#7A2021] uppercase tracking-widest">Our Best Seller</h3>
 
             <div class="flex overflow-x-auto snap-x snap-mandatory gap-6 pb-8 no-scrollbar">
-                <!-- Products (Limit to 7) -->
-                <Link v-for="(product, index) in products.slice(0, 7)" :key="product.id" :href="route('shop.show', product.slug)" class="group relative block min-w-[300px] w-[300px] md:min-w-[calc(25%-1.125rem)] md:w-[calc(25%-1.125rem)] snap-center flex-shrink-0">
+                <!-- First 7 Products -->
+                <Link v-for="(product, index) in products.slice(0, 7)" :key="product.id" :href="route('shop.show', product.slug)" class="group relative block min-w-[300px] w-[300px] snap-center flex-shrink-0">
                     <!-- Image Container -->
                     <div class="aspect-square bg-gray-100 relative overflow-hidden">
                         <img v-if="product.image_path" :src="'/storage/' + product.image_path" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
@@ -131,8 +131,8 @@ defineProps<{
                     </div>
                 </Link>
 
-                <!-- 7th Item: View More -->
-                <Link :href="route('shop.index')" class="group relative block min-w-[300px] w-[300px] md:min-w-[calc(25%-1.125rem)] md:w-[calc(25%-1.125rem)] snap-center flex-shrink-0">
+                <!-- 8th Item: View More (after 7 products) -->
+                <Link :href="route('shop.index')" class="group relative block min-w-[300px] w-[300px] snap-center flex-shrink-0">
                     <div class="aspect-square bg-transparent border border-[#7A2021] flex flex-col items-center justify-center text-[#7A2021] transition">
                         <span class="text-lg font-bold uppercase tracking-widest mb-4 group-hover:text-gray-500 transition-colors duration-300">View More</span>
                         <ArrowRight class="w-10 h-10 group-hover:scale-125 group-hover:text-gray-500 transition-all duration-300" />
