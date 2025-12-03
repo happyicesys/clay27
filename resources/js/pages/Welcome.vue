@@ -101,8 +101,8 @@ defineProps<{
             <h3 class="text-4xl font-serif mb-12 text-center text-[#7A2021] uppercase tracking-widest">Our Best Seller</h3>
 
             <div class="flex overflow-x-auto snap-x snap-mandatory gap-6 pb-8 no-scrollbar">
-                <!-- Products (Limit to 6) -->
-                <Link v-for="(product, index) in products.slice(0, 6)" :key="product.id" :href="route('shop.show', product.slug)" class="group relative block min-w-[300px] w-[300px] md:min-w-[calc(25%-1.125rem)] md:w-[calc(25%-1.125rem)] snap-center flex-shrink-0">
+                <!-- Products (Limit to 7) -->
+                <Link v-for="(product, index) in products.slice(0, 7)" :key="product.id" :href="route('shop.show', product.slug)" class="group relative block min-w-[300px] w-[300px] md:min-w-[calc(25%-1.125rem)] md:w-[calc(25%-1.125rem)] snap-center flex-shrink-0">
                     <!-- Image Container -->
                     <div class="aspect-square bg-gray-100 relative overflow-hidden">
                         <img v-if="product.image_path" :src="'/storage/' + product.image_path" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
