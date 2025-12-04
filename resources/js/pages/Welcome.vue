@@ -1,8 +1,9 @@
 <script setup lang="ts">
 import { Head, Link } from '@inertiajs/vue3';
 import { ShoppingCart, Menu, ArrowRight } from 'lucide-vue-next';
+import { computed } from 'vue';
 
-defineProps<{
+const props = defineProps<{
     banners: Array<{
         id: number;
         image_path: string;
@@ -17,6 +18,28 @@ defineProps<{
         image_path: string;
     }>;
 }>();
+
+// Mock products to fill in if we don't have enough real products
+const mockProducts = [
+    { id: 9001, name: 'Elegant Clay Earrings', slug: 'elegant-clay-earrings', price: 25.99, image_path: null, isMock: true },
+    { id: 9002, name: 'Handcrafted Necklace', slug: 'handcrafted-necklace', price: 35.50, image_path: null, isMock: true },
+    { id: 9003, name: 'Minimalist Bracelet', slug: 'minimalist-bracelet', price: 18.75, image_path: null, isMock: true },
+    { id: 9004, name: 'Artisan Ring Set', slug: 'artisan-ring-set', price: 42.00, image_path: null, isMock: true },
+    { id: 9005, name: 'Boho Clay Pendant', slug: 'boho-clay-pendant', price: 28.99, image_path: null, isMock: true },
+    { id: 9006, name: 'Statement Earrings', slug: 'statement-earrings', price: 32.50, image_path: null, isMock: true },
+    { id: 9007, name: 'Delicate Chain Set', slug: 'delicate-chain-set', price: 45.00, image_path: null, isMock: true },
+];
+
+// Computed property to ensure we have at least 7 products
+const displayProducts = computed(() => {
+    const realProducts = props.products || [];
+    if (realProducts.length >= 7) {
+        return realProducts;
+    }
+    // Fill with mock products to reach 7 items
+    const needed = 7 - realProducts.length;
+    return [...realProducts, ...mockProducts.slice(0, needed)];
+});
 </script>
 
 <template>
@@ -102,11 +125,13 @@ defineProps<{
 
             <div class="flex overflow-x-auto snap-x snap-mandatory gap-6 pb-8 no-scrollbar">
                 <!-- First 7 Products -->
-                <Link v-for="(product, index) in products.slice(0, 7)" :key="product.id" :href="route('shop.show', product.slug)" class="group relative block min-w-[300px] w-[300px] snap-center flex-shrink-0">
+                <Link v-for="(product, index) in displayProducts.slice(0, 7)" :key="product.id" :href="route('shop.show', product.slug)" class="group relative block min-w-[300px] w-[300px] snap-center flex-shrink-0">
                     <!-- Image Container -->
                     <div class="aspect-square bg-gray-100 relative overflow-hidden">
                         <img v-if="product.image_path" :src="'/storage/' + product.image_path" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
-                        <div v-else class="w-full h-full flex items-center justify-center text-gray-400">No Image</div>
+                        <div v-else class="w-full h-full flex items-center justify-center text-gray-400 bg-gradient-to-br from-gray-200 to-gray-300">
+                            <span class="text-sm text-gray-500">{{ product.name }}</span>
+                        </div>
 
                         <!-- Hover Add to Cart -->
                         <div class="absolute inset-0 bg-black/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
