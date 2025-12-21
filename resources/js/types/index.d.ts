@@ -1,5 +1,11 @@
-import { InertiaLinkProps } from '@inertiajs/vue3';
+import { InertiaLinkProps, PageProps as InertiaPageProps } from '@inertiajs/vue3';
+import { type ZiggyConfig } from 'ziggy-js';
 import type { LucideIcon } from 'lucide-vue-next';
+
+// Add Ziggy route function definition
+declare global {
+    var route: (name?: string, params?: any, absolute?: boolean, config?: ZiggyConfig) => string;
+}
 
 export interface Auth {
     user: User;

@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { Head, Link, useForm } from '@inertiajs/vue3';
 import { ShoppingCart, Menu } from 'lucide-vue-next';
+import { formatCurrency } from '@/lib/utils';
 
 const props = defineProps<{
     cart: {
@@ -37,7 +38,7 @@ const total = (items: any[]) => {
 
     <div class="min-h-screen bg-[#F9F5F1] text-[#4A2C2A]">
         <header class="flex justify-between items-center p-6">
-            <Link :href="route('home')" class="text-2xl font-bold tracking-widest">CLAY 27</Link>
+            <Link :href="route('home')" class="text-2xl font-bold tracking-widest">CLAY27</Link>
             <div class="flex gap-4">
                 <Menu class="w-6 h-6 cursor-pointer" />
                 <ShoppingCart class="w-6 h-6 cursor-pointer" />
@@ -53,11 +54,11 @@ const total = (items: any[]) => {
                     <h2 class="text-xl font-bold mb-4">Order Summary</h2>
                     <div v-for="item in cart.items" :key="item.id" class="flex justify-between mb-2 text-sm">
                         <span>{{ item.product.name }} x {{ item.quantity }}</span>
-                        <span>${{ (item.product.price * item.quantity).toFixed(2) }}</span>
+                        <span>{{ formatCurrency(item.product.price * item.quantity) }}</span>
                     </div>
                     <div class="border-t mt-4 pt-4 flex justify-between font-bold text-lg">
                         <span>Total</span>
-                        <span>${{ total(cart.items) }}</span>
+                        <span>{{ formatCurrency(total(cart.items)) }}</span>
                     </div>
                 </div>
 

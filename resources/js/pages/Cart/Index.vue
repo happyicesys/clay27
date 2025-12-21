@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { Head, Link, router } from '@inertiajs/vue3';
 import { ShoppingCart, Menu, Trash2 } from 'lucide-vue-next';
+import SiteFooter from '@/components/SiteFooter.vue';
+import { formatCurrency } from '@/lib/utils';
 
 defineProps<{
     cart: {
@@ -34,7 +36,7 @@ const total = (items: any[]) => {
 
     <div class="min-h-screen bg-[#F9F5F1] text-[#4A2C2A]">
         <header class="flex justify-between items-center p-6">
-            <Link :href="route('home')" class="text-2xl font-bold tracking-widest">CLAY 27</Link>
+            <Link :href="route('home')" class="text-2xl font-bold tracking-widest">CLAY27</Link>
             <div class="flex gap-4">
                 <Menu class="w-6 h-6 cursor-pointer" />
                 <ShoppingCart class="w-6 h-6 cursor-pointer" />
@@ -48,11 +50,11 @@ const total = (items: any[]) => {
                 <div class="bg-white rounded-lg shadow overflow-hidden mb-6">
                     <div v-for="item in cart.items" :key="item.id" class="flex items-center p-4 border-b last:border-b-0">
                         <div class="w-20 h-20 bg-gray-100 rounded overflow-hidden flex-shrink-0">
-                            <img v-if="item.product.image_path" :src="'/storage/' + item.product.image_path" class="w-full h-full object-cover">
+                            <img v-if="item.product.image_url" :src="item.product.image_url" class="w-full h-full object-cover">
                         </div>
                         <div class="ml-4 flex-1">
                             <h3 class="font-medium">{{ item.product.name }}</h3>
-                            <p class="text-sm text-gray-500">${{ item.product.price }}</p>
+                            <p class="text-sm text-gray-500">{{ formatCurrency(item.product.price) }}</p>
                         </div>
                         <div class="flex items-center gap-4">
                             <div class="flex items-center border rounded">
@@ -69,7 +71,7 @@ const total = (items: any[]) => {
 
                 <div class="flex justify-between items-center mb-8">
                     <span class="text-xl font-bold">Total:</span>
-                    <span class="text-xl font-bold">${{ total(cart.items) }}</span>
+                    <span class="text-xl font-bold">{{ formatCurrency(total(cart.items)) }}</span>
                 </div>
 
                 <div class="flex justify-end">
@@ -83,5 +85,6 @@ const total = (items: any[]) => {
                 <Link :href="route('shop.index')" class="text-[#4A2C2A] font-bold hover:underline">Continue Shopping</Link>
             </div>
         </div>
+        <SiteFooter />
     </div>
 </template>

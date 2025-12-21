@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import { Head, Link } from '@inertiajs/vue3';
 import { ShoppingCart, Menu, ArrowRight } from 'lucide-vue-next';
-import { computed } from 'vue';
+import SiteFooter from '@/components/SiteFooter.vue';
+import { formatCurrency } from '@/lib/utils';
 
 const props = defineProps<{
     banners: Array<{
@@ -9,6 +10,15 @@ const props = defineProps<{
         image_path: string;
         title: string;
         link_url: string;
+        position: string;
+        image_url: string;
+    }>;
+    categories: Array<{
+        id: number;
+        name: string;
+        slug: string;
+        image_path: string | null;
+        image_url: string | null; // Added image_url type
     }>;
     products: Array<{
         id: number;
@@ -16,30 +26,15 @@ const props = defineProps<{
         slug: string;
         price: number;
         image_path: string;
+        is_bestseller: boolean;
+        image_url: string; // Added image_url type
     }>;
 }>();
 
-// Mock products to fill in if we don't have enough real products
-const mockProducts = [
-    { id: 9001, name: 'Elegant Clay Earrings', slug: 'elegant-clay-earrings', price: 25.99, image_path: null, isMock: true },
-    { id: 9002, name: 'Handcrafted Necklace', slug: 'handcrafted-necklace', price: 35.50, image_path: null, isMock: true },
-    { id: 9003, name: 'Minimalist Bracelet', slug: 'minimalist-bracelet', price: 18.75, image_path: null, isMock: true },
-    { id: 9004, name: 'Artisan Ring Set', slug: 'artisan-ring-set', price: 42.00, image_path: null, isMock: true },
-    { id: 9005, name: 'Boho Clay Pendant', slug: 'boho-clay-pendant', price: 28.99, image_path: null, isMock: true },
-    { id: 9006, name: 'Statement Earrings', slug: 'statement-earrings', price: 32.50, image_path: null, isMock: true },
-    { id: 9007, name: 'Delicate Chain Set', slug: 'delicate-chain-set', price: 45.00, image_path: null, isMock: true },
-];
+import { computed } from 'vue';
 
-// Computed property to ensure we have at least 7 products
-const displayProducts = computed(() => {
-    const realProducts = props.products || [];
-    if (realProducts.length >= 7) {
-        return realProducts;
-    }
-    // Fill with mock products to reach 7 items
-    const needed = 7 - realProducts.length;
-    return [...realProducts, ...mockProducts.slice(0, needed)];
-});
+const mainBanner = computed(() => props.banners.find(b => b.position === 'main'));
+const workshopBanner = computed(() => props.banners.find(b => b.position === 'workshop'));
 </script>
 
 <template>
@@ -50,7 +45,7 @@ const displayProducts = computed(() => {
         <header class="flex justify-between items-center px-20 py-12 bg-[#F9F5F1]">
             <!-- Logo -->
             <div class="text-2xl font-bold tracking-widest text-[#7A2021] origin-left scale-[1.15]">
-                CLAY 27
+                CLAY27
             </div>
 
             <!-- Center Nav -->
@@ -64,17 +59,19 @@ const displayProducts = computed(() => {
             <!-- Right Icons -->
             <div class="flex gap-6 text-[#7A2021]">
                 <Menu class="w-6 h-6 cursor-pointer md:hidden" />
-                <ShoppingCart class="w-6 h-6 cursor-pointer" />
+                <Link :href="route('cart.index')">
+                    <ShoppingCart class="w-6 h-6 cursor-pointer" />
+                </Link>
             </div>
         </header>
 
         <!-- Main Banner -->
         <div class="w-full h-[550px] relative mb-16">
-            <div v-if="banners.length > 0" class="w-full h-full">
-                <img :src="'/storage/' + banners[0].image_path" class="w-full h-full object-cover" :alt="banners[0].title">
+            <div v-if="mainBanner" class="w-full h-full">
+                <img :src="mainBanner.image_url" class="w-full h-full object-cover" :alt="mainBanner.title">
                 <!-- Overlay Button (Left Side) -->
                 <div class="absolute inset-y-0 left-0 flex items-center pl-20">
-                     <Link :href="banners[0].link_url || route('shop.index')" class="bg-white text-[#7A2021] px-10 py-4 border border-[#7A2021] hover:bg-[#7A2021] hover:text-white transition uppercase tracking-widest font-bold text-sm">
+                     <Link :href="mainBanner.link_url || route('shop.index')" class="bg-white text-[#7A2021] px-10 py-4 border border-[#7A2021] hover:bg-[#7A2021] hover:text-white transition uppercase tracking-widest font-bold text-sm rounded-md">
                         Shop Now
                      </Link>
                 </div>
@@ -84,37 +81,23 @@ const displayProducts = computed(() => {
             </div>
         </div>
 
-        <!-- Shop By Type -->
-        <div class="w-full bg-white py-20 mb-16">
+        <!-- Shop By Category -->
+        <div class="w-full bg-white py-20 mb-16" v-if="categories.length > 0">
              <div class="w-full text-center px-8 md:px-0 pb-12">
-                <h3 class="text-4xl font-serif mb-24 text-[#7A2021] uppercase tracking-widest">Shop By Type</h3>
+                <h3 class="text-4xl font-serif mb-24 text-[#7A2021] uppercase tracking-widest">Shop By Category</h3>
 
                 <div class="flex justify-center gap-12 flex-wrap px-8">
-                    <!-- Mock Categories -->
-                    <div class="flex flex-col items-center gap-6">
-                        <div class="w-[300px] h-[300px] rounded-full bg-gray-200 overflow-hidden relative group cursor-pointer">
-                             <img src="https://placehold.co/400" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
+                    <Link v-for="category in categories" :key="category.id" :href="route('shop.index', { category: category.slug })" class="flex flex-col items-center gap-6 group">
+                        <div class="w-[300px] h-[300px] rounded-full bg-gray-200 overflow-hidden relative border-4 border-transparent group-hover:border-[#7A2021] transition duration-500">
+                             <img v-if="category.image_url" :src="category.image_url" class="w-full h-full object-cover group-hover:scale-125 transition-transform duration-500 ease-in-out">
+                             <div v-if="category.image_path" class="absolute inset-0 bg-white opacity-20 group-hover:opacity-0 transition-opacity duration-500 pointer-events-none"></div>
+
+                             <div v-if="!category.image_path" class="w-full h-full bg-[#E5E0DC] flex items-center justify-center text-gray-400">
+                                 <span class="text-4xl">{{ category.name.substring(0, 2) }}</span>
+                             </div>
                         </div>
-                        <span class="text-xl uppercase tracking-widest text-[#7A2021] font-bold">Earrings</span>
-                    </div>
-                    <div class="flex flex-col items-center gap-6">
-                        <div class="w-[300px] h-[300px] rounded-full bg-gray-200 overflow-hidden relative group cursor-pointer">
-                             <img src="https://placehold.co/400" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
-                        </div>
-                        <span class="text-xl uppercase tracking-widest text-[#7A2021] font-bold">Necklaces</span>
-                    </div>
-                    <div class="flex flex-col items-center gap-6">
-                        <div class="w-[300px] h-[300px] rounded-full bg-gray-200 overflow-hidden relative group cursor-pointer">
-                             <img src="https://placehold.co/400" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
-                        </div>
-                        <span class="text-xl uppercase tracking-widest text-[#7A2021] font-bold">Bracelets</span>
-                    </div>
-                     <div class="flex flex-col items-center gap-6">
-                        <div class="w-[300px] h-[300px] rounded-full bg-gray-200 overflow-hidden relative group cursor-pointer">
-                             <img src="https://placehold.co/400" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
-                        </div>
-                        <span class="text-xl uppercase tracking-widest text-[#7A2021] font-bold">Rings</span>
-                    </div>
+                        <span class="text-xl uppercase tracking-widest text-[#7A2021] font-bold">{{ category.name }}</span>
+                    </Link>
                 </div>
              </div>
         </div>
@@ -125,30 +108,30 @@ const displayProducts = computed(() => {
 
             <div class="flex overflow-x-auto snap-x snap-mandatory gap-6 pb-8 no-scrollbar">
                 <!-- First 7 Products -->
-                <Link v-for="(product, index) in displayProducts.slice(0, 7)" :key="product.id" :href="route('shop.show', product.slug)" class="group relative block min-w-[300px] w-[300px] snap-center flex-shrink-0">
+                <Link v-for="(product, index) in products.slice(0, 7)" :key="product.id" :href="route('shop.show', product.slug)" class="group relative block min-w-[300px] w-[300px] snap-center flex-shrink-0">
                     <!-- Image Container -->
-                    <div class="aspect-square bg-gray-100 relative overflow-hidden">
-                        <img v-if="product.image_path" :src="'/storage/' + product.image_path" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="aspect-square bg-gray-100 relative overflow-hidden rounded-xl">
+                        <img v-if="product.image_url" :src="product.image_url" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
                         <div v-else class="w-full h-full flex items-center justify-center text-gray-400 bg-gradient-to-br from-gray-200 to-gray-300">
                             <span class="text-sm text-gray-500">{{ product.name }}</span>
                         </div>
 
                         <!-- Hover Add to Cart -->
                         <div class="absolute inset-0 bg-black/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
-                            <button class="bg-white text-[#7A2021] px-8 py-3 uppercase tracking-widest font-bold hover:bg-[#7A2021] hover:text-white transition shadow-lg">
+                            <button class="bg-white text-[#7A2021] px-8 py-3 uppercase tracking-widest font-bold hover:bg-[#7A2021] hover:text-white transition shadow-lg rounded-md">
                                 Add to Cart
                             </button>
                         </div>
 
                         <!-- Top Left Label -->
-                        <div class="absolute top-4 left-4 bg-white border border-[#7A2021] px-4 py-1 z-10">
-                            <span class="text-xs font-bold text-[#7A2021] uppercase tracking-widest">{{ index % 2 === 0 ? 'New' : 'Best Seller' }}</span>
+                        <div class="absolute top-4 left-4 bg-white border border-[#7A2021] px-4 py-1 z-10" v-if="product.is_bestseller || index < 2">
+                            <span class="text-xs font-bold text-[#7A2021] uppercase tracking-widest">{{ product.is_bestseller ? 'Best Seller' : 'New' }}</span>
                         </div>
 
                         <!-- Bottom Left Info -->
                         <div class="absolute bottom-6 left-6 text-white drop-shadow-md z-10">
                              <h4 class="text-xl font-bold leading-tight mb-1">{{ product.name }}</h4>
-                             <p class="text-lg font-medium">${{ product.price }}</p>
+                             <p class="text-lg font-medium">{{ formatCurrency(product.price) }}</p>
                         </div>
 
                         <!-- Gradient Overlay for text readability -->
@@ -158,7 +141,7 @@ const displayProducts = computed(() => {
 
                 <!-- 8th Item: View More (after 7 products) -->
                 <Link :href="route('shop.index')" class="group relative block min-w-[300px] w-[300px] snap-center flex-shrink-0">
-                    <div class="aspect-square bg-transparent border border-[#7A2021] flex flex-col items-center justify-center text-[#7A2021] transition">
+                    <div class="aspect-square bg-transparent border border-[#7A2021] flex flex-col items-center justify-center text-[#7A2021] transition rounded-xl">
                         <span class="text-lg font-bold uppercase tracking-widest mb-4 group-hover:text-gray-500 transition-colors duration-300">View More</span>
                         <ArrowRight class="w-10 h-10 group-hover:scale-125 group-hover:text-gray-500 transition-all duration-300" />
                     </div>
@@ -171,18 +154,19 @@ const displayProducts = computed(() => {
             <!-- Left Image (Arch) -->
             <div class="w-full lg:w-1/2 h-[400px] lg:h-full relative px-8 lg:px-0 lg:pr-12 flex justify-center lg:justify-end">
                 <div class="w-full max-w-[500px] h-full rounded-t-[250px] overflow-hidden bg-gray-300 relative">
-                     <img src="https://placehold.co/600x800" class="w-full h-full object-cover">
+                     <img v-if="workshopBanner" :src="workshopBanner.image_url" class="w-full h-full object-cover">
+                     <img v-else src="https://placehold.co/600x800" class="w-full h-full object-cover">
                 </div>
             </div>
 
             <!-- Right Text -->
             <div class="w-full lg:w-1/2 h-full flex flex-col justify-center px-8 lg:px-12 text-[#7A2021] mt-8 lg:mt-0 text-center lg:text-left">
-                <h4 class="text-2xl font-bold mb-6 uppercase tracking-widest">Our Studio in Johor Bahru</h4>
+                <h4 class="text-2xl font-bold mb-6 uppercase tracking-widest">Workshop Available in Johor Bahru (by appointment)</h4>
                 <p class="mb-10 text-lg leading-relaxed max-w-xl mx-auto lg:mx-0">
                     Join us for an immersive clay-making experience. Learn the art of polymer clay and create your own unique jewelry pieces in our cozy studio.
                 </p>
                 <div>
-                    <a href="#" class="inline-block bg-[#7A2021] text-white px-10 py-3 uppercase tracking-widest font-bold hover:bg-opacity-90 transition">
+                    <a href="#" class="inline-block bg-[#7A2021] text-white px-10 py-3 uppercase tracking-widest font-bold hover:bg-opacity-90 transition rounded-md">
                         More Info
                     </a>
                 </div>
@@ -190,9 +174,7 @@ const displayProducts = computed(() => {
         </div>
 
         <!-- Footer -->
-        <footer class="bg-[#7A2021] text-white py-12 text-center opacity-90">
-            <p>&copy; 2025 Clay 27. All rights reserved.</p>
-        </footer>
+        <SiteFooter />
     </div>
 </template>
 

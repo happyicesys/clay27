@@ -1,12 +1,14 @@
 <script setup lang="ts">
 import AppLayout from '@/layouts/AppLayout.vue';
 import { Head, Link, router } from '@inertiajs/vue3';
+import HoverImagePreview from '@/components/HoverImagePreview.vue';
 
 defineProps<{
     banners: Array<{
         id: number;
         title: string;
         image_path: string;
+        image_url: string;
         position: string;
         is_active: boolean;
     }>;
@@ -23,19 +25,17 @@ const deleteBanner = (id: number) => {
     <Head title="Banners" />
 
     <AppLayout>
-        <template #header>
-            <div class="flex justify-between items-center">
-                <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-                    Banners
-                </h2>
-                <Link :href="route('admin.banners.create')" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-                    Create Banner
-                </Link>
-            </div>
-        </template>
-
         <div class="py-12">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+                <div class="flex justify-between items-center mb-6">
+                    <h2 class="font-semibold text-xl text-gray-800 leading-tight text-white">
+                        Banners ({{ banners.length }})
+                    </h2>
+                    <Link :href="route('admin.banners.create')" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                        Create Banner
+                    </Link>
+                </div>
+
                 <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                     <div class="p-6 text-gray-900">
                         <table class="min-w-full divide-y divide-gray-200">
@@ -51,7 +51,10 @@ const deleteBanner = (id: number) => {
                             <tbody class="bg-white divide-y divide-gray-200">
                                 <tr v-for="banner in banners" :key="banner.id">
                                     <td class="px-6 py-4 whitespace-nowrap">
-                                        <img :src="'/storage/' + banner.image_path" class="h-10 w-20 object-cover rounded">
+                                        <HoverImagePreview
+                                            :src="banner.image_url"
+                                            image-class="h-10 w-20 object-cover rounded cursor-zoom-in"
+                                        />
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap">{{ banner.title }}</td>
                                     <td class="px-6 py-4 whitespace-nowrap">{{ banner.position }}</td>

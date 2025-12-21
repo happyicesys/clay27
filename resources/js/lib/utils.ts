@@ -16,3 +16,8 @@ export function urlIsActive(
 export function toUrl(href: NonNullable<InertiaLinkProps['href']>) {
     return typeof href === 'string' ? href : href?.url;
 }
+
+export function formatCurrency(amount: number | string) {
+    const num = Number(amount);
+    return 'RM ' + num.toFixed(2);
+}

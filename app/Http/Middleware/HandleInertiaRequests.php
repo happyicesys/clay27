@@ -45,7 +45,10 @@ class HandleInertiaRequests extends Middleware
             'auth' => [
                 'user' => $request->user(),
             ],
-            'sidebarOpen' => ! $request->hasCookie('sidebar_state') || $request->cookie('sidebar_state') === 'true',
+            'sidebarOpen' => !$request->hasCookie('sidebar_state') || $request->cookie('sidebar_state') === 'true',
+            'site_settings' => \App\Models\SiteSetting::all()->mapWithKeys(function ($item) {
+                return [$item->key => $item->value];
+            }),
         ];
     }
 }

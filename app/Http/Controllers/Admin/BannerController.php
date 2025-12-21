@@ -26,7 +26,10 @@ class BannerController extends Controller
 
     public function create()
     {
-        return Inertia::render('Admin/Banners/Create');
+        $existingPositions = Banner::distinct()->pluck('position')->toArray();
+        return Inertia::render('Admin/Banners/Create', [
+            'existingPositions' => $existingPositions
+        ]);
     }
 
     public function store(Request $request)
@@ -35,9 +38,13 @@ class BannerController extends Controller
             'title' => 'nullable|string|max:255',
             'image' => 'required|image|max:2048',
             'link_url' => 'nullable|url',
-            'position' => 'string|in:main,footer',
+            'position' => 'string|in:main,footer,workshop',
             'is_active' => 'boolean'
         ]);
+
+        if (Banner::where('position', $validated['position'])->exists()) {
+            return back()->withErrors(['position' => 'A banner with this position already exists.']);
+        }
 
         $this->bannerService->create($validated);
 
@@ -46,8 +53,10 @@ class BannerController extends Controller
 
     public function edit(Banner $banner)
     {
+        $existingPositions = Banner::distinct()->pluck('position')->toArray();
         return Inertia::render('Admin/Banners/Edit', [
-            'banner' => $banner
+            'banner' => $banner,
+            'existingPositions' => $existingPositions
         ]);
     }
 
@@ -57,9 +66,13 @@ class BannerController extends Controller
             'title' => 'nullable|string|max:255',
             'image' => 'nullable|image|max:2048',
             'link_url' => 'nullable|url',
-            'position' => 'string|in:main,footer',
+            'position' => 'string|in:main,footer,workshop',
             'is_active' => 'boolean'
         ]);
+
+        if (isset($validated['position']) && Banner::where('position', $validated['position'])->where('id', '!=', $banner->id)->exists()) {
+            return back()->withErrors(['position' => 'A banner with this position already exists.']);
+        }
 
         $this->bannerService->update($banner, $validated);
 

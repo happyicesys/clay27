@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { Head, Link } from '@inertiajs/vue3';
 import { CheckCircle } from 'lucide-vue-next';
+import { formatCurrency } from '@/lib/utils';
 
 defineProps<{
     order: {
@@ -31,11 +32,11 @@ defineProps<{
                 <h3 class="font-bold mb-2">Order Details</h3>
                 <div v-for="item in order.items" :key="item.id" class="flex justify-between text-sm mb-1">
                     <span>{{ item.product_name }} x {{ item.quantity }}</span>
-                    <span>${{ item.price }}</span>
+                    <span>{{ formatCurrency(item.price) }}</span>
                 </div>
                 <div class="border-t mt-2 pt-2 flex justify-between font-bold">
                     <span>Total</span>
-                    <span>${{ order.total_amount }}</span>
+                    <span>{{ formatCurrency(order.total_amount) }}</span>
                 </div>
             </div>
 

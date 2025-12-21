@@ -14,7 +14,7 @@ import {
 import { dashboard } from '@/routes';
 import { type NavItem } from '@/types';
 import { Link } from '@inertiajs/vue3';
-import { BookOpen, Folder, LayoutGrid, ShoppingBag, Image } from 'lucide-vue-next';
+import { BookOpen, Folder, LayoutGrid, ShoppingBag, Image, Tags, Settings } from 'lucide-vue-next';
 import AppLogo from './AppLogo.vue';
 
 const mainNavItems: NavItem[] = [
@@ -22,6 +22,11 @@ const mainNavItems: NavItem[] = [
         title: 'Dashboard',
         href: dashboard(),
         icon: LayoutGrid,
+    },
+    {
+        title: 'Categories',
+        href: route('admin.categories.index'),
+        icon: Tags,
     },
     {
         title: 'Products',
@@ -32,6 +37,11 @@ const mainNavItems: NavItem[] = [
         title: 'Banners',
         href: route('admin.banners.index'),
         icon: Image,
+    },
+    {
+        title: 'Settings',
+        href: route('admin.settings.index'),
+        icon: Settings,
     },
 ];
 

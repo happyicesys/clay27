@@ -13,11 +13,17 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // User::factory(10)->create();
 
-        User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
+        if (!User::where('email', 'leehongjie91@gmail.com')->exists()) {
+            User::factory()->create([
+                'name' => 'Super Admin',
+                'email' => 'leehongjie91@gmail.com',
+                'password' => 'steph432!',
+            ]);
+        }
+
+        $this->call([
+            SiteSettingsSeeder::class,
         ]);
     }
 }

@@ -25,4 +25,25 @@ Route::middleware('auth')->group(function () {
 
     Route::get('settings/two-factor', [TwoFactorAuthenticationController::class, 'show'])
         ->name('two-factor.show');
+
+    Route::get('settings/two-factor/qr-code', [Laravel\Fortify\Http\Controllers\TwoFactorQrCodeController::class, 'show'])
+        ->name('two-factor.qr-code');
+
+    Route::get('settings/two-factor/secret-key', [Laravel\Fortify\Http\Controllers\TwoFactorSecretKeyController::class, 'show'])
+        ->name('two-factor.secret-key');
+
+    Route::get('settings/two-factor/recovery-codes', [Laravel\Fortify\Http\Controllers\RecoveryCodeController::class, 'index'])
+        ->name('two-factor.recovery-codes');
+
+    Route::post('settings/two-factor/recovery-codes', [Laravel\Fortify\Http\Controllers\RecoveryCodeController::class, 'store'])
+        ->name('two-factor.regenerate-recovery-codes');
+
+    Route::post('settings/two-factor/confirm', [Laravel\Fortify\Http\Controllers\ConfirmedTwoFactorAuthenticationController::class, 'store'])
+        ->name('two-factor.confirm');
+
+    Route::post('settings/two-factor', [Laravel\Fortify\Http\Controllers\TwoFactorAuthenticationController::class, 'store'])
+        ->name('two-factor.enable');
+
+    Route::delete('settings/two-factor', [Laravel\Fortify\Http\Controllers\TwoFactorAuthenticationController::class, 'destroy'])
+        ->name('two-factor.disable');
 });

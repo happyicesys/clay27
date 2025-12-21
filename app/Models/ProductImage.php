@@ -4,15 +4,14 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Banner extends Model
+class ProductImage extends Model
 {
-    protected $fillable = [
-        'title',
-        'image_path',
-        'link_url',
-        'position',
-        'is_active',
-    ];
+    protected $fillable = ['product_id', 'image_path', 'sequence'];
+
+    public function product()
+    {
+        return $this->belongsTo(Product::class);
+    }
     protected $appends = ['image_url'];
 
     public function getImageUrlAttribute()

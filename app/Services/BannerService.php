@@ -9,13 +9,13 @@ class BannerService
 {
     public function getAll()
     {
-        return Banner::orderBy('position')->get();
+        return Banner::orderBy('position', 'desc')->latest()->get();
     }
 
     public function create(array $data)
     {
         if (isset($data['image'])) {
-            $data['image_path'] = $data['image']->store('banners', 'public');
+            $data['image_path'] = $data['image']->store('banners');
         }
         return Banner::create($data);
     }
@@ -24,9 +24,9 @@ class BannerService
     {
         if (isset($data['image'])) {
             if ($banner->image_path) {
-                Storage::disk('public')->delete($banner->image_path);
+                Storage::delete($banner->image_path);
             }
-            $data['image_path'] = $data['image']->store('banners', 'public');
+            $data['image_path'] = $data['image']->store('banners');
         }
         $banner->update($data);
         return $banner;
@@ -35,7 +35,7 @@ class BannerService
     public function delete(Banner $banner)
     {
         if ($banner->image_path) {
-            Storage::disk('public')->delete($banner->image_path);
+            Storage::delete($banner->image_path);
         }
         return $banner->delete();
     }
